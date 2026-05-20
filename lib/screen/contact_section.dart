@@ -217,7 +217,7 @@ class _ContactSectionState extends State<ContactSection> {
                               label: 'GitHub',
                               onTap: () async {
                                 final uri = Uri.parse(
-                                  'https://github.com/',
+                                  'https://github.com/Parthkanjariya1375',
                                 );
                                 await launchUrl(uri);
                               },
@@ -227,7 +227,7 @@ class _ContactSectionState extends State<ContactSection> {
                               label: 'LinkedIn',
                               onTap: () async {
                                 final uri = Uri.parse(
-                                  'https://linkedin.com/',
+                                  'www.linkedin.com/in/parth-kanjariya-693104354',
                                 );
                                 await launchUrl(uri);
                               },
