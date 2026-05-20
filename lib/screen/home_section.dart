@@ -526,7 +526,7 @@ class _HomeSectionState extends State<HomeSection>
         color: Colors.white.withOpacity(0.05),
       ),
       child: Text(
-        "Download CV",
+        "Download Resume",
         style: TextStyle(
           color: Colors.white,
           fontSize: 16.sp,
