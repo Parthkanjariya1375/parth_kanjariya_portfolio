@@ -6,7 +6,7 @@ class SkillSection extends StatelessWidget {
   const SkillSection({super.key});
 
   bool isMobile(BuildContext context) {
-    return ResponsiveBreakpoints.of(context).smallerThan(TABLET);
+    return ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET);
   }
 
   @override
@@ -171,7 +171,7 @@ class _SkillCardState extends State<_SkillCard> {
 
   @override
   Widget build(BuildContext context) {
-    final mobile = ResponsiveBreakpoints.of(context).smallerThan(TABLET);
+    final mobile = ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET);
 
     return MouseRegion(
       onEnter: (_) {

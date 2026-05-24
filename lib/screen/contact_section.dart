@@ -21,7 +21,7 @@ class _ContactSectionState extends State<ContactSection> {
   bool isLoading = false;
 
   bool isMobile(BuildContext context) {
-    return ResponsiveBreakpoints.of(context).smallerThan(TABLET);
+    return ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET);
   }
 
   Future<void> sendEmail() async {
@@ -35,11 +35,20 @@ class _ContactSectionState extends State<ContactSection> {
     final email = emailController.text.trim();
     final message = messageController.text.trim();
 
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((MapEntry<String, String> e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'kanjariyaparth967@gmail.com',
-      query:
-      'subject=Portfolio Contact From $name&body=Name: $name\nEmail: $email\n\n$message',
+      query: encodeQueryParameters({
+        'subject': 'Portfolio Contact From $name',
+        'body': 'Name: $name\nEmail: $email\n\n$message',
+      }),
     );
 
     try {
@@ -227,7 +236,7 @@ class _ContactSectionState extends State<ContactSection> {
                               label: 'LinkedIn',
                               onTap: () async {
                                 final uri = Uri.parse(
-                                  'www.linkedin.com/in/parth-kanjariya-693104354',
+                                  'http://www.linkedin.com/in/parth-kanjariya-693104354',
                                 );
                                 await launchUrl(uri);
                               },

@@ -4,7 +4,6 @@ class ProjectModel {
   final String image;
   final List<String> technologies;
   final String githubUrl;
-  final String liveUrl;
 
   const ProjectModel({
     required this.title,
@@ -12,6 +11,5 @@ class ProjectModel {
     required this.image,
     required this.technologies,
     required this.githubUrl,
-    required this.liveUrl,
   });
 }

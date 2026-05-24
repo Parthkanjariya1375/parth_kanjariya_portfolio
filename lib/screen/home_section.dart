@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parth_kanjariya_portfolio/screen/project_section.dart';
 import 'package:parth_kanjariya_portfolio/screen/skills_section.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'about_section.dart';
 import 'contact_section.dart';
@@ -30,7 +31,7 @@ class _HomeSectionState extends State<HomeSection>
   final GlobalKey skillsKey = GlobalKey();
   final GlobalKey contactKey = GlobalKey();
 
-  String selectedTab = "Home";
+  final ValueNotifier<String> selectedTab = ValueNotifier("Home");
 
   final List<String> titles = [
     "Flutter Developer",
@@ -49,9 +50,22 @@ class _HomeSectionState extends State<HomeSection>
         curve: Curves.easeInOut,
       );
 
-      setState(() {
-        selectedTab = tab;
-      });
+      selectedTab.value = tab;
+    }
+  }
+
+  Future<void> downloadResume() async {
+    final Uri url = Uri.parse(
+      "https://drive.google.com/file/d/1GXOIVBAx_UXyrtf8fGKL8S1gDB9SJD-F/view?usp=sharing",
+    );
+    try {
+      await launchUrl(url);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Could not open resume')));
+      }
     }
   }
 
@@ -78,7 +92,7 @@ class _HomeSectionState extends State<HomeSection>
   }
 
   bool isMobile(BuildContext context) =>
-      ResponsiveBreakpoints.of(context).smallerThan(TABLET);
+      ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET);
 
   @override
   Widget build(BuildContext context) {
@@ -131,15 +145,15 @@ class _HomeSectionState extends State<HomeSection>
                   /// Main Content
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: mobile ? 24.w : 80.w,
-                      vertical: 40.h,
+                      horizontal: mobile ? 24.0 : 80.w,
+                      vertical: mobile ? 40.0 : 40.h,
                     ),
                     child: Column(
                       children: [
                         /// Navbar
                         _buildNavbar(mobile),
 
-                        SizedBox(height: mobile ? 60.h : 100.h),
+                        SizedBox(height: mobile ? 60.0 : 100.h),
 
                         /// Hero Section
                         mobile
@@ -206,68 +220,74 @@ class _HomeSectionState extends State<HomeSection>
           "Parth.",
           style: TextStyle(
             color: Colors.white,
-            fontSize: mobile ? 26.sp : 32.sp,
+            fontSize: mobile ? 28.0 : 32.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
           ),
         ).animate().fade().slideX(begin: -0.3),
 
-        if (!mobile)
-          Row(
-            children: navItems.map((item) {
-              return _navItem(
-                item,
-                isActive: selectedTab == item,
-                onTap: () {
-                  if (item == "Home") {
+        ValueListenableBuilder<String>(
+          valueListenable: selectedTab,
+          builder: (context, currentTab, _) {
+            if (!mobile) {
+              return Row(
+                children: navItems.map((item) {
+                  return _navItem(
+                    item,
+                    isActive: currentTab == item,
+                    onTap: () {
+                      if (item == "Home") {
+                        scrollToSection(homeKey, "Home");
+                      } else if (item == "About") {
+                        scrollToSection(aboutKey, "About");
+                      } else if (item == "Projects") {
+                        scrollToSection(projectsKey, "Projects");
+                      } else if (item == "Skills") {
+                        scrollToSection(skillsKey, "Skills");
+                      } else if (item == "Contact") {
+                        scrollToSection(contactKey, "Contact");
+                      }
+                    },
+                  );
+                }).toList(),
+              );
+            } else {
+              return PopupMenuButton<String>(
+                color: const Color(0xFF1A1A1A),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                onSelected: (value) {
+                  if (value == "Home") {
                     scrollToSection(homeKey, "Home");
-                  } else if (item == "About") {
+                  } else if (value == "About") {
                     scrollToSection(aboutKey, "About");
-                  } else if (item == "Projects") {
+                  } else if (value == "Projects") {
                     scrollToSection(projectsKey, "Projects");
-                  } else if (item == "Skills") {
+                  } else if (value == "Skills") {
                     scrollToSection(skillsKey, "Skills");
-                  } else if (item == "Contact") {
+                  } else if (value == "Contact") {
                     scrollToSection(contactKey, "Contact");
                   }
                 },
-              );
-            }).toList(),
-          )
-        else
-          PopupMenuButton<String>(
-            color: const Color(0xFF1A1A1A),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            onSelected: (value) {
-              if (value == "Home") {
-                scrollToSection(homeKey, "Home");
-              } else if (value == "About") {
-                scrollToSection(aboutKey, "About");
-              } else if (value == "Projects") {
-                scrollToSection(projectsKey, "Projects");
-              } else if (value == "Skills") {
-                scrollToSection(skillsKey, "Skills");
-              } else if (value == "Contact") {
-                scrollToSection(contactKey, "Contact");
-              }
-            },
-            itemBuilder: (context) {
-              return navItems.map((item) {
-                return _popupItem(item, isActive: selectedTab == item);
-              }).toList();
-            },
-            child: Container(
-              padding: EdgeInsets.all(10.w),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(color: Colors.white.withOpacity(0.08)),
-              ),
-              child: const Icon(Icons.menu_rounded, color: Colors.white),
-            ),
-          ).animate().fade().slideX(begin: 0.3),
+                itemBuilder: (context) {
+                  return navItems.map((item) {
+                    return _popupItem(item, isActive: currentTab == item);
+                  }).toList();
+                },
+                child: Container(
+                  padding: EdgeInsets.all(mobile ? 12.0 : 10.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  child: const Icon(Icons.menu_rounded, color: Colors.white),
+                ),
+              ).animate().fade().slideX(begin: 0.3);
+            }
+          },
+        ),
       ],
     );
   }
@@ -280,7 +300,7 @@ class _HomeSectionState extends State<HomeSection>
         style: TextStyle(
           color: isActive ? Colors.deepPurpleAccent : Colors.white,
           fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-          fontSize: 14.sp,
+          fontSize: 16.0,
         ),
       ),
     );
@@ -327,34 +347,37 @@ class _HomeSectionState extends State<HomeSection>
           : CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: mobile ? 20.0 : 18.w,
+            vertical: mobile ? 12.0 : 10.h,
+          ),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.06),
-            borderRadius: BorderRadius.circular(30.r),
+            borderRadius: BorderRadius.circular(mobile ? 30.0 : 30.r),
             border: Border.all(color: Colors.white.withOpacity(0.08)),
           ),
           child: Text(
             "Welcome to my portfolio",
             style: TextStyle(
               color: Colors.white70,
-              fontSize: mobile ? 13.sp : 14.sp,
+              fontSize: mobile ? 14.0 : 14.sp,
             ),
           ),
         ).animate().fade().slideY(begin: -0.4),
 
-        SizedBox(height: 30.h),
+        SizedBox(height: mobile ? 30.0 : 30.h),
 
         Text(
           "Hi, I'm",
           textAlign: mobile ? TextAlign.center : TextAlign.left,
           style: TextStyle(
             color: Colors.white70,
-            fontSize: mobile ? 22.sp : 28.sp,
+            fontSize: mobile ? 28.0 : 28.sp,
             fontWeight: FontWeight.w400,
           ),
         ).animate().fade(delay: 200.ms),
 
-        SizedBox(height: 8.h),
+        SizedBox(height: mobile ? 12.0 : 8.h),
 
         ShaderMask(
           shaderCallback: (bounds) {
@@ -368,19 +391,19 @@ class _HomeSectionState extends State<HomeSection>
             style: TextStyle(
               color: Colors.white,
               height: 1.1,
-              fontSize: mobile ? 42.sp : 72.sp,
+              fontSize: mobile ? 46.0 : 72.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
         ).animate().fade(delay: 300.ms).slideX(begin: -0.2),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: mobile ? 24.0 : 24.h),
 
         SizedBox(
-          height: 45.h,
+          height: mobile ? 45.0 : 45.h,
           child: DefaultTextStyle(
             style: TextStyle(
-              fontSize: mobile ? 22.sp : 30.sp,
+              fontSize: mobile ? 26.0 : 30.sp,
               fontWeight: FontWeight.w600,
               color: const Color(0xff60a5fa),
             ),
@@ -398,7 +421,7 @@ class _HomeSectionState extends State<HomeSection>
           ),
         ).animate().fade(delay: 500.ms),
 
-        SizedBox(height: 28.h),
+        SizedBox(height: mobile ? 28.0 : 28.h),
 
         SizedBox(
           width: mobile ? double.infinity : 580.w,
@@ -407,23 +430,24 @@ class _HomeSectionState extends State<HomeSection>
             textAlign: mobile ? TextAlign.center : TextAlign.left,
             style: TextStyle(
               color: Colors.white60,
-              fontSize: mobile ? 15.sp : 17.sp,
+              fontSize: mobile ? 16.0 : 17.sp,
               height: 1.8,
             ),
           ),
         ).animate().fade(delay: 700.ms),
 
-        SizedBox(height: 40.h),
+        SizedBox(height: mobile ? 40.0 : 40.h),
 
         Wrap(
           alignment: mobile ? WrapAlignment.center : WrapAlignment.start,
-          spacing: 20.w,
-          runSpacing: 20.h,
+          spacing: mobile ? 16.0 : 20.w,
+          runSpacing: mobile ? 16.0 : 20.h,
           children: [
-            _primaryButton(() => scrollToSection(contactKey, "Contact")),
-            _secondaryButton(() {
-              // downloadResume();
-            }),
+            _primaryButton(
+              mobile,
+              () => scrollToSection(contactKey, "Contact"),
+            ),
+            _secondaryButton(mobile, downloadResume),
           ],
         ).animate().fade(delay: 900.ms).slideY(begin: 0.2),
       ],
@@ -440,8 +464,8 @@ class _HomeSectionState extends State<HomeSection>
           RotationTransition(
             turns: Tween<double>(begin: 0, end: 1).animate(_controller),
             child: Container(
-              width: mobile ? 260.w : 430.w,
-              height: mobile ? 260.w : 430.w,
+              width: mobile ? 280.0 : 430.w,
+              height: mobile ? 280.0 : 430.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: SweepGradient(
@@ -456,8 +480,8 @@ class _HomeSectionState extends State<HomeSection>
           ),
 
           Container(
-            width: mobile ? 220.w : 380.w,
-            height: mobile ? 220.w : 380.w,
+            width: mobile ? 240.0 : 380.w,
+            height: mobile ? 240.0 : 380.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white.withOpacity(0.05),
@@ -471,8 +495,8 @@ class _HomeSectionState extends State<HomeSection>
               ],
             ),
             child: ClipOval(
-              child: Image.network(
-                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+              child: Image.asset(
+                "assets/profile.jpeg",
                 fit: BoxFit.cover,
               ),
             ),
@@ -487,13 +511,16 @@ class _HomeSectionState extends State<HomeSection>
 
   /// ========================= BUTTONS =========================
 
-  Widget _primaryButton(VoidCallback onTap) {
+  Widget _primaryButton(bool mobile, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 18.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: mobile ? 32.0 : 32.w,
+          vertical: mobile ? 18.0 : 18.h,
+        ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(mobile ? 16.0 : 16.r),
           gradient: const LinearGradient(
             colors: [Color(0xff3b82f6), Color(0xff8b5cf6)],
           ),
@@ -509,7 +536,7 @@ class _HomeSectionState extends State<HomeSection>
           "Hire Me",
           style: TextStyle(
             color: Colors.white,
-            fontSize: 16.sp,
+            fontSize: mobile ? 16.0 : 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -517,20 +544,26 @@ class _HomeSectionState extends State<HomeSection>
     );
   }
 
-  Widget _secondaryButton(VoidCallback onTap) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 18.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.white.withOpacity(0.12)),
-        color: Colors.white.withOpacity(0.05),
-      ),
-      child: Text(
-        "Download Resume",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w500,
+  Widget _secondaryButton(bool mobile, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: mobile ? 32.0 : 32.w,
+          vertical: mobile ? 18.0 : 18.h,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(mobile ? 16.0 : 16.r),
+          border: Border.all(color: Colors.white.withOpacity(0.12)),
+          color: Colors.white.withOpacity(0.05),
+        ),
+        child: Text(
+          "Download Resume",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: mobile ? 16.0 : 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

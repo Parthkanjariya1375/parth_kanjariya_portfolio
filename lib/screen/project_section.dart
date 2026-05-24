@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -26,20 +25,19 @@ class ProjectsSection extends StatelessWidget {
       crossAxisCount = 1;
     }
 
+    final bool isMobile = width < 700;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: width < 700 ? 20.w : 80.w,
-        vertical: 100.h,
+        horizontal: isMobile ? 20.0 : 80.w,
+        vertical: isMobile ? 60.0 : 100.h,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff07111F),
-            Color(0xff0B1627),
-          ],
+          colors: [Color(0xff07111F), Color(0xff0B1627)],
         ),
       ),
       child: Column(
@@ -51,35 +49,26 @@ class ProjectsSection extends StatelessWidget {
                 Text(
                   'Featured Projects',
                   style: TextStyle(
-                    fontSize: width < 700 ? 34.sp : 50.sp,
+                    fontSize: isMobile ? 32.0 : 50.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                )
-                    .animate()
-                    .fade(duration: 700.ms)
-                    .slideY(begin: .3),
+                ).animate().fade(duration: 700.ms).slideY(begin: .3),
 
-                SizedBox(height: 16.h),
+                SizedBox(height: isMobile ? 16.0 : 16.h),
 
                 Container(
-                  width: 100.w,
-                  height: 4.h,
+                  width: isMobile ? 60.0 : 100.w,
+                  height: isMobile ? 4.0 : 4.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     gradient: const LinearGradient(
-                      colors: [
-                        Color(0xff00D1FF),
-                        Color(0xff7A5FFF),
-                      ],
+                      colors: [Color(0xff00D1FF), Color(0xff7A5FFF)],
                     ),
                   ),
-                )
-                    .animate()
-                    .fade(delay: 300.ms)
-                    .scale(),
+                ).animate().fade(delay: 300.ms).scale(),
 
-                SizedBox(height: 20.h),
+                SizedBox(height: isMobile ? 20.0 : 20.h),
 
                 SizedBox(
                   width: 700.w,
@@ -88,19 +77,16 @@ class ProjectsSection extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white70,
-                      fontSize: 16.sp,
+                      fontSize: isMobile ? 16.0 : 16.sp,
                       height: 1.7,
                     ),
                   ),
-                )
-                    .animate()
-                    .fade(delay: 500.ms)
-                    .slideY(begin: .2),
+                ).animate().fade(delay: 500.ms).slideY(begin: .2),
               ],
             ),
           ),
 
-          SizedBox(height: 70.h),
+          SizedBox(height: isMobile ? 50.0 : 70.h),
 
           GridView.builder(
             shrinkWrap: true,
@@ -113,9 +99,7 @@ class ProjectsSection extends StatelessWidget {
               childAspectRatio: width < 700 ? .78 : .75,
             ),
             itemBuilder: (context, index) {
-              return ProjectCard(
-                project: projects[index],
-              )
+              return ProjectCard(project: projects[index])
                   .animate(delay: Duration(milliseconds: 200 * index))
                   .fade(duration: 700.ms)
                   .slideY(begin: .2);
@@ -130,10 +114,7 @@ class ProjectsSection extends StatelessWidget {
 class ProjectCard extends StatefulWidget {
   final ProjectModel project;
 
-  const ProjectCard({
-    super.key,
-    required this.project,
-  });
+  const ProjectCard({super.key, required this.project});
 
   @override
   State<ProjectCard> createState() => _ProjectCardState();
@@ -144,6 +125,8 @@ class _ProjectCardState extends State<ProjectCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 700;
+
     return MouseRegion(
       onEnter: (_) {
         setState(() {
@@ -157,8 +140,7 @@ class _ProjectCardState extends State<ProjectCard> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        transform: Matrix4.identity()
-          ..translate(0.0, isHover ? -12 : 0.0),
+        transform: Matrix4.identity()..translate(0.0, isHover ? -12 : 0.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
@@ -180,14 +162,9 @@ class _ProjectCardState extends State<ProjectCard> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
-            ),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.04),
-              ),
+              decoration: BoxDecoration(color: Colors.white.withOpacity(.04)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -230,7 +207,7 @@ class _ProjectCardState extends State<ProjectCard> {
                   Expanded(
                     flex: 6,
                     child: Padding(
-                      padding: EdgeInsets.all(22.w),
+                      padding: EdgeInsets.all(isMobile ? 16.0 : 22.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -240,12 +217,12 @@ class _ProjectCardState extends State<ProjectCard> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 24.sp,
+                              fontSize: isMobile ? 22.0 : 24.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
 
-                          SizedBox(height: 14.h),
+                          SizedBox(height: isMobile ? 8.0 : 14.h),
 
                           Text(
                             widget.project.description,
@@ -253,111 +230,76 @@ class _ProjectCardState extends State<ProjectCard> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.white70,
-                              fontSize: 14.sp,
+                              fontSize: isMobile ? 14.0 : 14.sp,
                               height: 1.7,
                             ),
                           ),
 
-                          SizedBox(height: 20.h),
+                          SizedBox(height: isMobile ? 12.0 : 20.h),
 
                           Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
+                            spacing: isMobile ? 8.0 : 10.0,
+                            runSpacing: isMobile ? 8.0 : 10.0,
                             children: widget.project.technologies
                                 .map(
                                   (tech) => Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 14.w,
-                                  vertical: 8.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(100),
-                                  color: const Color(0xff00D1FF)
-                                      .withOpacity(.12),
-                                  border: Border.all(
-                                    color: const Color(0xff00D1FF)
-                                        .withOpacity(.3),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 10.0 : 14.w,
+                                      vertical: isMobile ? 6.0 : 8.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: const Color(
+                                        0xff00D1FF,
+                                      ).withOpacity(.12),
+                                      border: Border.all(
+                                        color: const Color(
+                                          0xff00D1FF,
+                                        ).withOpacity(.3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      tech,
+                                      style: TextStyle(
+                                        color: const Color(0xff8BE9FF),
+                                        fontSize: isMobile ? 12.0 : 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                child: Text(
-                                  tech,
-                                  style: TextStyle(
-                                    color: const Color(0xff8BE9FF),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            )
+                                )
                                 .toList(),
                           ),
 
                           const Spacer(),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await launchUrl(
-                                      Uri.parse(widget.project.liveUrl),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    const Color(0xff00D1FF),
-                                    foregroundColor: Colors.black,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 18.h,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Live Demo',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                await launchUrl(
+                                  Uri.parse(widget.project.githubUrl),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: Colors.white.withOpacity(.2),
+                                ),
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: isMobile ? 12.0 : 18.h,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-
-                              SizedBox(width: 14.w),
-
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    await launchUrl(
-                                      Uri.parse(widget.project.githubUrl),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(
-                                      color: Colors.white.withOpacity(.2),
-                                    ),
-                                    foregroundColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 18.h,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Github',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                              child: Text(
+                                'Github',
+                                style: TextStyle(
+                                  fontSize: isMobile ? 13.0 : 14.sp,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),

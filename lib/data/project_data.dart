@@ -5,39 +5,36 @@ const List<ProjectModel> projects = [
     title: 'E-Commerce App',
     description:
     'A modern ecommerce application with clean architecture, cart system, API integration and authentication',
-    image: 'assets/projects/ecommerce.png',
+    image: 'assets/ecommerce.jpeg',
     technologies: [
       'Flutter',
       'Firebase',
       'SQLite',
     ],
-    githubUrl: 'https://github.com/',
-    liveUrl: 'https://flutter.dev',
+    githubUrl: 'https://github.com/CygnerParthKanjariya/ecommerce_app_flutter',
   ),
   ProjectModel(
     title: 'Portfolio Website',
     description:
     'A futuristic responsive portfolio website with animations, adaptive layout and beautiful UI/UX.',
-    image: 'assets/projects/portfolio.png',
+    image: 'assets/portfolio.png',
     technologies: [
       'Flutter Web',
       'Responsive UI',
       'Animations',
     ],
-    githubUrl: 'https://github.com/',
-    liveUrl: 'https://flutter.dev',
+    githubUrl: 'https://github.com/Parthkanjariya1375/parth_kanjariya_portfolio',
   ),
   ProjectModel(
     title: 'Weather Application',
     description:
-    '',
-    image: 'assets/projects/food.png',
+    'Dynamically Search the City name for the current weather and forecast',
+    image: 'assets/weather.jpeg',
     technologies: [
       'Flutter',
       'REST API',
       'Bloc',
     ],
     githubUrl: 'https://github.com/',
-    liveUrl: 'https://flutter.dev',
   ),
 ];

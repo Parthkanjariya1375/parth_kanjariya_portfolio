@@ -17,8 +17,8 @@ class AboutSection extends StatelessWidget {
       key: sectionKey,
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 20.w : 80.w,
-        vertical: 80.h,
+        horizontal: isMobile ? 20.0 : 80.w,
+        vertical: isMobile ? 60.0 : 80.h,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -38,7 +38,7 @@ class AboutSection extends StatelessWidget {
             top: -80,
             right: -60,
             child: _circle(
-              size: 260,
+              size: isMobile ? 180.0 : 260.0,
               color: Colors.blue.withOpacity(0.12),
             ),
           ),
@@ -48,7 +48,7 @@ class AboutSection extends StatelessWidget {
             bottom: -100,
             left: -80,
             child: _circle(
-              size: 320,
+              size: isMobile ? 220.0 : 320.0,
               color: Colors.purple.withOpacity(0.12),
             ),
           ),
@@ -58,7 +58,7 @@ class AboutSection extends StatelessWidget {
               ? Column(
             children: [
               _aboutCards(),
-              SizedBox(height: 40.h),
+              SizedBox(height: isMobile ? 40.0 : 40.h),
               _aboutContent(),
             ],
           )
@@ -86,23 +86,23 @@ class AboutSection extends StatelessWidget {
           "About Me",
           style: TextStyle(
             color: Colors.deepPurpleAccent,
-            fontSize: isMobile ? 32.sp : 42.sp,
+            fontSize: isMobile ? 32.0 : 42.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
 
-        SizedBox(height: 20.h),
+        SizedBox(height: isMobile ? 20.0 : 20.h),
 
         Text(
           "Flutter Developer",
           style: TextStyle(
             color: Colors.white,
-            fontSize: isMobile ? 22.sp : 30.sp,
+            fontSize: isMobile ? 24.0 : 30.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
 
-        SizedBox(height: 20.h),
+        SizedBox(height: isMobile ? 20.0 : 20.h),
 
         Text(
           "I build high-performance Flutter applications "
@@ -112,7 +112,7 @@ class AboutSection extends StatelessWidget {
           style: TextStyle(
             color: Colors.white70,
             height: 1.8,
-            fontSize: isMobile ? 15.sp : 17.sp,
+            fontSize: isMobile ? 16.0 : 17.sp,
           ),
         ),
       ],
@@ -131,7 +131,7 @@ class AboutSection extends StatelessWidget {
                 subtitle: "Flutter Experience",
               ),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: isMobile ? 16.0 : 20.w),
             Expanded(
               child: _infoCard(
                 icon: Icons.phone_android_rounded,
@@ -142,7 +142,7 @@ class AboutSection extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 20.h),
+        SizedBox(height: isMobile ? 16.0 : 20.h),
 
         Row(
           children: [
@@ -153,7 +153,7 @@ class AboutSection extends StatelessWidget {
                 subtitle: "Web Development",
               ),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: isMobile ? 16.0 : 20.w),
             Expanded(
               child: _infoCard(
                 icon: Icons.flash_on_rounded,
@@ -164,14 +164,14 @@ class AboutSection extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 24.h),
+        SizedBox(height: isMobile ? 24.0 : 24.h),
 
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all(isMobile ? 20.0 : 24.w),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(24.r),
+            borderRadius: BorderRadius.circular(isMobile ? 20.0 : 24.r),
             border: Border.all(
               color: Colors.white.withOpacity(0.08),
             ),
@@ -183,16 +183,16 @@ class AboutSection extends StatelessWidget {
                 "Tech Stack",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
+                  fontSize: isMobile ? 20.0 : 20.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: isMobile ? 20.0 : 20.h),
 
               Wrap(
-                spacing: 12.w,
-                runSpacing: 12.h,
+                spacing: isMobile ? 12.0 : 12.w,
+                runSpacing: isMobile ? 12.0 : 12.h,
                 children: [
                   _techBadge("Flutter"),
                   _techBadge("Dart"),
@@ -216,10 +216,10 @@ class AboutSection extends StatelessWidget {
     required String subtitle,
   }) {
     return Container(
-      padding: EdgeInsets.all(22.w),
+      padding: EdgeInsets.all(isMobile ? 16.0 : 22.w),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(isMobile ? 20.0 : 24.r),
         border: Border.all(
           color: Colors.white.withOpacity(0.08),
         ),
@@ -229,28 +229,28 @@ class AboutSection extends StatelessWidget {
           Icon(
             icon,
             color: Colors.deepPurpleAccent,
-            size: 34.sp,
+            size: isMobile ? 28.0 : 34.sp,
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: isMobile ? 12.0 : 16.h),
 
           Text(
             title,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 22.sp,
+              fontSize: isMobile ? 18.0 : 22.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: isMobile ? 6.0 : 8.h),
 
           Text(
             subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white70,
-              fontSize: 14.sp,
+              fontSize: isMobile ? 14.0 : 14.sp,
             ),
           ),
         ],
@@ -261,19 +261,19 @@ class AboutSection extends StatelessWidget {
   Widget _techBadge(String title) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 10.h,
+        horizontal: isMobile ? 16.0 : 16.w,
+        vertical: isMobile ? 10.0 : 10.h,
       ),
       decoration: BoxDecoration(
         color: Colors.deepPurpleAccent.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(30.r),
+        borderRadius: BorderRadius.circular(isMobile ? 30.0 : 30.r),
       ),
       child: Text(
         title,
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w600,
-          fontSize: 13.sp,
+          fontSize: isMobile ? 13.0 : 13.sp,
         ),
       ),
     );
